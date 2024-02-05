@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
 import Alert from "../Alert";
 import axios from "axios";
 function FormEquip() {
@@ -14,6 +14,26 @@ function FormEquip() {
     type: "",
   });
   const router = useRouter();
+  const params = useParams();
+
+  useEffect(() => {
+    const dataEquip = async () => {
+      try {
+        if (params.id) {
+          const result = await axios(`/api/equipments/${params.id}`);
+          return result.data.map((item) => {
+            setTypeEq(item.eqType),
+              setBrand(item.brand),
+              setModel(item.model),
+              setSerialN(item.serialNumber);
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    dataEquip();
+  }, []);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if ([eqType, brand, model, serialNumber].includes("")) {
@@ -31,7 +51,30 @@ function FormEquip() {
       }, 3000);
       return;
     }
-    //Params
+    if (params.id) {
+      await axios.put(`/api/equipments/${params.id}`, {
+        eqType,
+        brand,
+        model,
+        serialNumber,
+      });
+      setAlert({
+        msg: "Los datos han sido modificados",
+        status: true,
+        type: "success",
+      });
+      setTimeout(() => {
+        setAlert({
+          msg: "",
+          status: false,
+          type: "",
+        });
+        router.push("/equipment");
+        router.refresh();
+      }, 2000);
+
+      return;
+    }
     await axios.post("/api/equipments", {
       eqType,
       brand,
