@@ -31,6 +31,7 @@ function FormEquip() {
       }, 3000);
       return;
     }
+    //Params
     await axios.post("/api/equipments", {
       eqType,
       brand,

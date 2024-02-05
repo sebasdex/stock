@@ -1,5 +1,5 @@
 import axios from "axios";
-import Table from "./Table";
+import TableE from "./TableE";
 
 async function dataEmployees() {
   try {
@@ -12,7 +12,7 @@ async function dataEmployees() {
 
 async function TableEmployee() {
   const employee = await dataEmployees();
-  return <Table employee={employee} />;
+  return <TableE employee={employee} />;
 }
 
 export default TableEmployee;
