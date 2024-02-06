@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Alert from "../Alert";
 import axios from "axios";
 
@@ -17,68 +17,90 @@ function FormMaintenance() {
   });
 
   const router = useRouter();
+  const params = useParams();
+
+  useEffect(() => {
+    if (params.id) {
+      const dataMaintenance = async () => {
+        try {
+          const response = await axios(`/api/maintenance/${params.id}`);
+          if (response.data) {
+            const item = response.data;
+            setEquip(item.idEq);
+            // Conversión de la fecha al formato YYYY-MM-DD
+            const formattedDate = new Date(item.mDate)
+              .toISOString()
+              .split("T")[0];
+            setDateM(formattedDate);
+            setDetails(item.details);
+            setTMain(item.typeMain);
+          } else {
+            console.log("No se encontraron datos para el id:", params.id);
+          }
+        } catch (error) {
+          console.error("Error fetching maintenance data:", error);
+          setAlert({
+            msg: "Error al recuperar los datos de mantenimiento",
+            status: true,
+            type: "error",
+          });
+        }
+      };
+      dataMaintenance();
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      if ([typeMain, idEq, mDate, details].includes("")) {
-        setAlert({
-          msg: "Los campos están vacíos",
-          status: true,
-          type: "error",
-        });
-        setTimeout(() => {
-          setAlert({
-            msg: "",
-            status: false,
-            type: "",
-          });
-        }, 3000);
-        return;
-      }
+    // Función auxiliar para establecer alertas
+    const setAlertMessage = (msg, status, type, timeout = 4000) => {
+      setAlert({ msg, status, type });
+      setTimeout(() => setAlert({ msg: "", status: false, type: "" }), timeout);
+    };
 
-      await axios.post("/api/maintenance", {
-        idEq,
-        mDate,
-        typeMain,
-        details,
-      });
-    } catch (error) {
-      console.error("Error during post request:", error);
-      if (error.response) {
-        console.error(
-          "Server responded with status code:",
-          error.response.status
-        );
-        console.error("Response data:", error.response.data);
-      } else if (error.request) {
-        console.error("No response received from the server");
-      } else {
-        console.error("Error setting up the request:", error.message);
-      }
-      setAlert({
-        msg: "Error during request",
-        status: true,
-        type: "error",
-      });
+    if ([typeMain, idEq, mDate, details].includes("")) {
+      setAlertMessage("Los campos están vacíos", true, "error", 3000);
+      return;
     }
-    setAlert({
-      msg: "Los datos han sido registrados",
-      status: true,
-      type: "success",
-    });
-    setTimeout(() => {
-      setAlert({
-        msg: "",
-        status: false,
-        type: "",
-      });
-    }, 4000);
-    setTMain("");
-    setEquip("");
-    setDateM("");
-    setDetails("");
-    router.refresh();
+
+    try {
+      if (params.id) {
+        await axios.put(`/api/maintenance/${params.id}`, {
+          idEq,
+          mDate,
+          typeMain,
+          details,
+        });
+        setAlertMessage(
+          "Los datos han sido actualizados",
+          true,
+          "success",
+          2000
+        );
+        setTimeout(() => {
+          router.push("/maintenance");
+          router.refresh();
+        }, 2000);
+      } else {
+        await axios.post("/api/maintenance", {
+          idEq,
+          mDate,
+          typeMain,
+          details,
+        });
+        setAlertMessage("Los datos han sido registrados", true, "success");
+        router.refresh();
+      }
+    } catch (error) {
+      console.error("Error during request:", error);
+      setAlertMessage("Error durante la solicitud", true, "error");
+    } finally {
+      // Limpiar formulario
+      setTMain("");
+      setEquip("");
+      setDateM("");
+      setDetails("");
+    }
   };
 
   const handleReset = () => {
