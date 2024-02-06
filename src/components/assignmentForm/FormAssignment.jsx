@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Alert from "../Alert";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 function FormAssignment() {
   const [employees, setEmployees] = useState([]);
@@ -19,6 +19,40 @@ function FormAssignment() {
   });
 
   const router = useRouter();
+  const params = useParams();
+
+  useEffect(() => {
+    if (params.id) {
+      const dataAssignment = async () => {
+        try {
+          const response = await axios(`/api/assignment/${params.id}`);
+          if (response.data) {
+            const item = response.data;
+            setEmployeeForm(item.idEmployee);
+            setEquip(item.idEq);
+            // Conversión de la fecha al formato YYYY-MM-DD
+            const formattedDate = new Date(item.assignDate)
+              .toISOString()
+              .split("T")[0];
+            setAssignDate(formattedDate);
+            setDetails(item.details);
+            setStatus(item.status);
+          } else {
+            console.log("No se encontraron datos para el id:", params.id);
+          }
+        } catch (error) {
+          console.error("Error fetching assignment data:", error);
+          setAlert({
+            msg: "Error al recuperar los datos de mantenimiento",
+            status: true,
+            type: "error",
+          });
+        }
+      };
+      dataAssignment();
+    }
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if ([idEmployee, idEq, assignDate, details, status].includes("")) {
