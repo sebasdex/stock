@@ -20,6 +20,9 @@ function TableA({ assignment }) {
                 Estado
               </th>
               <th scope="col" className="px-6 py-3">
+                Detalles
+              </th>
+              <th scope="col" className="px-6 py-3">
                 Fecha del evento
               </th>
               <th scope="col" className="px-6 py-3">
@@ -36,6 +39,7 @@ function TableA({ assignment }) {
                 <td className="px-6 py-4">{item.name}</td>
                 <td className="px-6 py-4">{item.equip}</td>
                 <td className="px-6 py-4">{item.status}</td>
+                <td className="px-6 py-4">{item.details}</td>
                 <td className="px-6 py-4 normal-case">
                   {new Date(item.assignDate).toLocaleDateString("es-ES", {
                     year: "numeric",

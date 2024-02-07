@@ -40,3 +40,40 @@ export async function GET(request, { params }) {
     );
   }
 }
+
+export async function PUT(request, { params }) {
+  try {
+    const data = await request.json();
+    const result = await conn.query("UPDATE assignments SET ? WHERE id = ?", [
+      data,
+      params.id,
+    ]);
+
+    if (result.affectedRows === 0) {
+      return new Response(
+        JSON.stringify({ message: "Asignación no encontrada" }),
+        {
+          status: 404,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    const [updatedAssignment] = await conn.query(
+      "SELECT * FROM assignments WHERE id = ?",
+      [params.id]
+    );
+    return new Response(JSON.stringify(updatedAssignment), {
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    console.error(error);
+    return new Response(
+      JSON.stringify({ message: "Error interno del servidor" }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+}

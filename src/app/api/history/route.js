@@ -4,7 +4,7 @@ import { conn } from "@/libs/db";
 export async function GET() {
   try {
     const data = await conn.query(
-      "SELECT history.id, CONCAT(eqType,' ',brand,' ', model)as eq, CONCAT(name, ' ', firstName, ' ', lastName)as fullName, dateEvent,typeEvent FROM history, equipment,employees WHERE history.idEq = equipment.id AND history.idEmployee = employees.id;"
+      "SELECT history.id, history.details, CONCAT(eqType,' ',brand,' ', model)as eq, CONCAT(name, ' ', firstName, ' ', lastName)as fullName, dateEvent,typeEvent FROM history, equipment,employees WHERE history.idEq = equipment.id AND history.idEmployee = employees.id ORDER BY history.id DESC"
     );
     return NextResponse.json(data);
   } catch (error) {

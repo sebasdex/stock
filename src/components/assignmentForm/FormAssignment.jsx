@@ -55,6 +55,11 @@ function FormAssignment() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Función auxiliar para establecer alertas
+    const setAlertMessage = (msg, status, type, timeout = 4000) => {
+      setAlert({ msg, status, type });
+      setTimeout(() => setAlert({ msg: "", status: false, type: "" }), timeout);
+    };
     if ([idEmployee, idEq, assignDate, details, status].includes("")) {
       setAlert({ msg: "Los campos estan vacios", status: true, type: "error" });
       setTimeout(() => {
@@ -62,37 +67,60 @@ function FormAssignment() {
       }, 3000);
       return;
     }
+
     try {
-      await axios.post("/api/assignment", {
-        idEmployee,
-        idEq,
-        assignDate,
-        details,
-        status,
-      });
-      await axios.post("/api/history", {
-        idEmployee,
-        idEq,
-        dateEvent: assignDate,
-        typeEvent: status,
-        details,
-      });
-      setAlert({
-        msg: "¡Éxito! Los datos han sido registrados",
-        status: true,
-        type: "success",
-      });
-      setTimeout(() => {
-        setAlert({ msg: "", status: false, type: "" });
-      }, 3000);
+      if (params.id) {
+        await axios.put(`/api/assignment/${params.id}`, {
+          idEmployee,
+          idEq,
+          assignDate,
+          details,
+          status,
+        });
+        await axios.post("/api/history", {
+          idEmployee,
+          idEq,
+          dateEvent: assignDate,
+          typeEvent: status,
+          details,
+        });
+        setAlertMessage(
+          "Los datos han sido actualizados",
+          true,
+          "success",
+          2000
+        );
+        setTimeout(() => {
+          router.push("/assignment");
+          router.refresh();
+        }, 2000);
+      } else {
+        await axios.post("/api/assignment", {
+          idEmployee,
+          idEq,
+          assignDate,
+          details,
+          status,
+        });
+        await axios.post("/api/history", {
+          idEmployee,
+          idEq,
+          dateEvent: assignDate,
+          typeEvent: status,
+          details,
+        });
+        setAlertMessage("Los datos han sido registrados", true, "success");
+        router.refresh();
+      }
+    } catch (error) {
+      console.error("Error during request:", error);
+      setAlertMessage("Error durante la solicitud", true, "error");
+    } finally {
       setEmployeeForm("");
       setEquip("");
       setAssignDate("");
       setDetails("");
       setStatus("");
-      router.refresh();
-    } catch (error) {
-      console.log(error);
     }
   };
   const handleReset = () => {

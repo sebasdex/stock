@@ -20,6 +20,9 @@ async function History() {
               Tipo de evento
             </th>
             <th scope="col" className="px-6 py-3">
+              Detalles
+            </th>
+            <th scope="col" className="px-6 py-3">
               Fecha del evento
             </th>
           </tr>
@@ -30,6 +33,7 @@ async function History() {
               <td className="px-6 py-4">{item.eq}</td>
               <td className="px-6 py-4">{item.fullName}</td>
               <td className="px-6 py-4">{item.typeEvent}</td>
+              <td className="px-6 py-4">{item.details}</td>
               <td className="px-6 py-4">
                 {new Date(item.dateEvent).toLocaleDateString("es-ES", {
                   year: "numeric",
