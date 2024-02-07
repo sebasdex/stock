@@ -2,8 +2,17 @@ import axios from "axios";
 import TableM from "./TableM";
 
 async function loadMaintenance() {
-  const { data } = await axios("http://localhost:3000/api/maintenance");
-  return data.dataMaintenance;
+  try {
+    const { data } = await axios("http://localhost:3000/api/maintenance");
+    if (data.dataMaintenance) {
+      return data.dataMaintenance;
+    } else {
+      return <p>No data..</p>;
+    }
+  } catch (error) {
+    console.error("Error fetching maintenance data:", error);
+    return <p>Error fetching data. Please try again later.</p>;
+  }
 }
 
 async function TableMaintenance() {

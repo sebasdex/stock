@@ -1,5 +1,6 @@
 "use client";
 import { useRouter, useParams } from "next/navigation";
+import { Suspense } from "react";
 function Table({ employee }) {
   const router = useRouter();
   const params = useParams();
@@ -25,47 +26,59 @@ function Table({ employee }) {
             </tr>
           </thead>
           <tbody>
-            {employee.map((item) => (
-              <tr
-                className="odd:bg-whiteeven:bg-gray-50 border-b capitalize"
-                key={item.id}
-              >
-                <td className="px-6 py-4">{`${item.name} ${item.firstName} ${item.lastName}`}</td>
-                <td className="px-6 py-4">{item.charge}</td>
-                <td className="px-6 py-4">{item.department}</td>
-                <td className="px-6 py-4 space-x-10">
-                  {params.id && Number(params.id) === item.id ? (
-                    <button
-                      onClick={() => router.push(`/employees`)}
-                      className="font-medium text-red-600 hover:underline"
-                    >
-                      <span className="material-symbols-outlined">close</span>
-                    </button>
-                  ) : (
-                    <button
-                      onClick={
-                        params.id && Number(params.id) === item.id
-                          ? () => router.push(`/employees`)
-                          : () => router.push(`/employees/edit/${item.id}`)
-                      }
-                      className="font-medium hover:underline"
-                    >
-                      <span className="material-symbols-outlined">edit</span>
-                    </button>
-                  )}
-                  {params.id ? (
-                    ""
-                  ) : (
-                    <button
-                      onClick={() => router.push(`/employees/edit/${item.id}`)}
-                      className="hover:underline"
-                    >
-                      <span className="material-symbols-outlined">delete</span>
-                    </button>
-                  )}
+            {employee ? (
+              employee.map((item) => (
+                <tr
+                  className="odd:bg-whiteeven:bg-gray-50 border-b capitalize"
+                  key={item.id}
+                >
+                  <td className="px-6 py-4">{`${item.name} ${item.firstName} ${item.lastName}`}</td>
+                  <td className="px-6 py-4">{item.charge}</td>
+                  <td className="px-6 py-4">{item.department}</td>
+                  <td className="px-6 py-4 space-x-10">
+                    {params.id && Number(params.id) === item.id ? (
+                      <button
+                        onClick={() => router.push(`/employees`)}
+                        className="font-medium text-red-600 hover:underline"
+                      >
+                        <span className="material-symbols-outlined">close</span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={
+                          params.id && Number(params.id) === item.id
+                            ? () => router.push(`/employees`)
+                            : () => router.push(`/employees/edit/${item.id}`)
+                        }
+                        className="font-medium hover:underline"
+                      >
+                        <span className="material-symbols-outlined">edit</span>
+                      </button>
+                    )}
+                    {params.id ? (
+                      ""
+                    ) : (
+                      <button
+                        onClick={() =>
+                          router.push(`/employees/edit/${item.id}`)
+                        }
+                        className="hover:underline"
+                      >
+                        <span className="material-symbols-outlined">
+                          delete
+                        </span>
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" className="px-6 py-4 text-center">
+                  No hay empleados para mostrar.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

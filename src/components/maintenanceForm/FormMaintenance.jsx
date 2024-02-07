@@ -20,6 +20,20 @@ function FormMaintenance() {
   const params = useParams();
 
   useEffect(() => {
+    async function dataAxios() {
+      try {
+        const dataMain = await axios("/api/maintenance");
+        if (dataMain.data) {
+          setDataEquip(dataMain.data.dataEquipment);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    dataAxios();
+  }, []);
+
+  useEffect(() => {
     if (params.id) {
       const dataMaintenance = async () => {
         try {
@@ -110,18 +124,6 @@ function FormMaintenance() {
     setDetails("");
   };
 
-  useEffect(() => {
-    async function dataAxios() {
-      try {
-        const dataMain = await axios("/api/maintenance");
-        setDataEquip(dataMain.data.dataEquipment);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    dataAxios();
-  }, []);
-
   return (
     <form className="m-8 flex flex-col gap-5 uppercase" onSubmit={handleSubmit}>
       {alert.status && (
@@ -140,7 +142,7 @@ function FormMaintenance() {
             id="typeMain"
             className={`block w-full p-2 rounded-md bg-white`}
             style={{ fontFamily: "Roboto, sans-serif" }}
-            value={typeMain}
+            value={typeMain ? typeMain : ""}
             onChange={(e) => setTMain(e.target.value)}
           >
             <option value="">-- Selecciona una opción --</option>
@@ -158,7 +160,7 @@ function FormMaintenance() {
             id="idEq"
             className={`block w-full p-2 rounded-md bg-white`}
             style={{ fontFamily: "Roboto, sans-serif" }}
-            value={idEq}
+            value={idEq ? idEq : ""}
             onChange={(e) => setEquip(Number(e.target.value))}
           >
             <option value="">-- Selecciona una opción --</option>

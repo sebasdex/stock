@@ -28,48 +28,60 @@ function TableEq({ equip }) {
             </tr>
           </thead>
           <tbody>
-            {equip.map((item) => (
-              <tr
-                className="odd:bg-whiteeven:bg-gray-50 border-b capitalize"
-                key={item.id}
-              >
-                <td className="px-6 py-4">{item.eqType}</td>
-                <td className="px-6 py-4">{item.brand}</td>
-                <td className="px-6 py-4">{item.model}</td>
-                <td className="px-6 py-4">{item.serialNumber}</td>
-                <td className="px-6 py-4 space-x-10">
-                  {params.id && Number(params.id) === item.id ? (
-                    <button
-                      onClick={() => router.push(`/equipment`)}
-                      className="font-medium text-red-600 hover:underline"
-                    >
-                      <span className="material-symbols-outlined">close</span>
-                    </button>
-                  ) : (
-                    <button
-                      onClick={
-                        params.id && Number(params.id) === item.id
-                          ? () => router.push(`/equipment`)
-                          : () => router.push(`/equipment/edit/${item.id}`)
-                      }
-                      className="font-medium hover:underline"
-                    >
-                      <span className="material-symbols-outlined">edit</span>
-                    </button>
-                  )}
-                  {params.id ? (
-                    ""
-                  ) : (
-                    <button
-                      onClick={() => router.push(`/equipment/edit/${item.id}`)}
-                      className="hover:underline"
-                    >
-                      <span className="material-symbols-outlined">delete</span>
-                    </button>
-                  )}
+            {equip ? (
+              equip.map((item) => (
+                <tr
+                  className="odd:bg-whiteeven:bg-gray-50 border-b capitalize"
+                  key={item.id}
+                >
+                  <td className="px-6 py-4">{item.eqType}</td>
+                  <td className="px-6 py-4">{item.brand}</td>
+                  <td className="px-6 py-4">{item.model}</td>
+                  <td className="px-6 py-4">{item.serialNumber}</td>
+                  <td className="px-6 py-4 space-x-10">
+                    {params.id && Number(params.id) === item.id ? (
+                      <button
+                        onClick={() => router.push(`/equipment`)}
+                        className="font-medium text-red-600 hover:underline"
+                      >
+                        <span className="material-symbols-outlined">close</span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={
+                          params.id && Number(params.id) === item.id
+                            ? () => router.push(`/equipment`)
+                            : () => router.push(`/equipment/edit/${item.id}`)
+                        }
+                        className="font-medium hover:underline"
+                      >
+                        <span className="material-symbols-outlined">edit</span>
+                      </button>
+                    )}
+                    {params.id ? (
+                      ""
+                    ) : (
+                      <button
+                        onClick={() =>
+                          router.push(`/equipment/edit/${item.id}`)
+                        }
+                        className="hover:underline"
+                      >
+                        <span className="material-symbols-outlined">
+                          delete
+                        </span>
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" className="px-6 py-4 text-center">
+                  No hay equipos para mostrar.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
