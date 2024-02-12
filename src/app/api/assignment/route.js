@@ -6,15 +6,32 @@ export async function GET() {
     const employeesResult = await conn.query("SELECT * FROM employees");
     const equipmentResult = await conn.query("SELECT * FROM equipment");
     const assignmentData = await conn.query(
-      "SELECT CONCAT(employees.name,' ', employees.firstName, ' ', employees.lastName)as name, CONCAT(equipment.brand,' ', equipment.model)as equip, assignments.id, assignments.assignDate,assignments.details,assignments.status   FROM assignments    INNER JOIN employees ON assignments.idEmployee = employees.id INNER JOIN equipment ON assignments.idEq = equipment.id;"
+      "SELECT CONCAT(employees.name,' ', employees.firstName, ' ', employees.lastName) AS name, CONCAT(equipment.brand,' ', equipment.model) AS equip, assignments.id, assignments.assignDate, assignments.details, assignments.status FROM assignments INNER JOIN employees ON assignments.idEmployee = employees.id INNER JOIN equipment ON assignments.idEq = equipment.id;"
     );
-    return NextResponse.json({
-      employeesResult,
-      equipmentResult,
-      assignmentData,
-    });
+    return NextResponse.json(
+      {
+        employeesResult,
+        equipmentResult,
+        assignmentData,
+      },
+      {
+        status: 200,
+      }
+    );
   } catch (error) {
-    console.log(error);
+    // Enviar el estado del error a la UI
+    return new NextResponse(
+      JSON.stringify({
+        success: false,
+        error:
+          "Hubo un problema al obtener los datos. Por favor, intente más tarde.",
+      }),
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
   }
 }
 

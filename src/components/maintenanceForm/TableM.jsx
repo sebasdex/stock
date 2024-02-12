@@ -80,7 +80,7 @@ function TableM({ maintenance }) {
               ))
             ) : (
               <tr>
-                <td colSpan="4" className="px-6 py-4 text-center">
+                <td colSpan="5" className="px-6 py-4 text-center">
                   No hay mantenimientos para mostrar.
                 </td>
               </tr>

@@ -3,12 +3,31 @@ import { conn } from "@/libs/db";
 
 export async function GET() {
   try {
-    const data = await conn.query(
+    const historyD = await conn.query(
       "SELECT history.id, history.details, CONCAT(eqType,' ',brand,' ', model)as eq, CONCAT(name, ' ', firstName, ' ', lastName)as fullName, dateEvent,typeEvent FROM history, equipment,employees WHERE history.idEq = equipment.id AND history.idEmployee = employees.id ORDER BY history.id DESC"
     );
-    return NextResponse.json(data);
+    return NextResponse.json(
+      {
+        historyD,
+      },
+      {
+        status: 200,
+      }
+    );
   } catch (error) {
-    console.log(error);
+    //console.log(error);
+    return new NextResponse(
+      JSON.stringify({
+        success: false,
+        error:
+          "Hubo un problema al obtener los datos. Por favor, intente más tarde.",
+      }),
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
   }
 }
 

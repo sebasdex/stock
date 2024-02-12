@@ -1,7 +1,7 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
 
-function TableA({ assignment }) {
+function TableA({ assignment = [] }) {
   const params = useParams();
   const router = useRouter();
   return (
@@ -31,55 +31,67 @@ function TableA({ assignment }) {
             </tr>
           </thead>
           <tbody>
-            {assignment.map((item) => (
-              <tr
-                className="odd:bg-whiteeven:bg-gray-50 border-b capitalize"
-                key={item.id}
-              >
-                <td className="px-6 py-4">{item.name}</td>
-                <td className="px-6 py-4">{item.equip}</td>
-                <td className="px-6 py-4">{item.status}</td>
-                <td className="px-6 py-4">{item.details}</td>
-                <td className="px-6 py-4 normal-case">
-                  {new Date(item.assignDate).toLocaleDateString("es-ES", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </td>
-                <td className="px-6 py-4 space-x-10">
-                  {params.id && Number(params.id) === item.id ? (
-                    <button
-                      onClick={() => router.push(`/assignment`)}
-                      className="font-medium text-red-600 hover:underline"
-                    >
-                      <span className="material-symbols-outlined">close</span>
-                    </button>
-                  ) : (
-                    <button
-                      onClick={
-                        params.id && Number(params.id) === item.id
-                          ? () => router.push(`/assignment`)
-                          : () => router.push(`/assignment/edit/${item.id}`)
-                      }
-                      className="font-medium hover:underline"
-                    >
-                      <span className="material-symbols-outlined">edit</span>
-                    </button>
-                  )}
-                  {params.id ? (
-                    ""
-                  ) : (
-                    <button
-                      onClick={() => router.push(`/employees/edit/${item.id}`)}
-                      className="hover:underline"
-                    >
-                      <span className="material-symbols-outlined">delete</span>
-                    </button>
-                  )}
+            {assignment.length > 0 ? (
+              assignment?.map((item) => (
+                <tr
+                  className="odd:bg-whiteeven:bg-gray-50 border-b capitalize"
+                  key={item.id}
+                >
+                  <td className="px-6 py-4">{item.name}</td>
+                  <td className="px-6 py-4">{item.equip}</td>
+                  <td className="px-6 py-4">{item.status}</td>
+                  <td className="px-6 py-4">{item.details}</td>
+                  <td className="px-6 py-4 normal-case">
+                    {new Date(item.assignDate).toLocaleDateString("es-ES", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </td>
+                  <td className="px-6 py-4 space-x-10">
+                    {params.id && Number(params.id) === item.id ? (
+                      <button
+                        onClick={() => router.push(`/assignment`)}
+                        className="font-medium text-red-600 hover:underline"
+                      >
+                        <span className="material-symbols-outlined">close</span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={
+                          params.id && Number(params.id) === item.id
+                            ? () => router.push(`/assignment`)
+                            : () => router.push(`/assignment/edit/${item.id}`)
+                        }
+                        className="font-medium hover:underline"
+                      >
+                        <span className="material-symbols-outlined">edit</span>
+                      </button>
+                    )}
+                    {params.id ? (
+                      ""
+                    ) : (
+                      <button
+                        onClick={() =>
+                          router.push(`/employees/edit/${item.id}`)
+                        }
+                        className="hover:underline"
+                      >
+                        <span className="material-symbols-outlined">
+                          delete
+                        </span>
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" className="px-6 py-4 text-center">
+                  No hay asignaciones para mostrar.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

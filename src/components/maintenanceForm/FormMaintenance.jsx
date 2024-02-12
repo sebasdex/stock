@@ -164,7 +164,7 @@ function FormMaintenance() {
             onChange={(e) => setEquip(Number(e.target.value))}
           >
             <option value="">-- Selecciona una opción --</option>
-            {dataEquip.map((item) => (
+            {dataEquip?.map((item) => (
               <option key={item.id} value={item.id}>
                 {`${item.brand}${" | "}${item.model}`}
               </option>

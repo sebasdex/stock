@@ -53,9 +53,25 @@ function FormAssignment() {
     }
   }, []);
 
+  useEffect(() => {
+    const dataEmployee = async () => {
+      try {
+        const response = await axios("/api/assignment");
+        if (response.data) {
+          setEmployees(response.data.employeesResult);
+          setEquipment(response.data.equipmentResult);
+        } else {
+          console.error("No se pudieron obtener los datos");
+        }
+      } catch (error) {
+        console.error("Error al realizar la solicitud a la API:", error);
+      }
+    };
+    dataEmployee();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Función auxiliar para establecer alertas
     const setAlertMessage = (msg, status, type, timeout = 4000) => {
       setAlert({ msg, status, type });
       setTimeout(() => setAlert({ msg: "", status: false, type: "" }), timeout);
@@ -130,18 +146,7 @@ function FormAssignment() {
     setDetails("");
     setStatus("");
   };
-  useEffect(() => {
-    const dataEmployee = async () => {
-      try {
-        const data = await axios("/api/assignment");
-        setEmployees(data.data.employeesResult);
-        setEquipment(data.data.equipmentResult);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    dataEmployee();
-  }, []);
+
   return (
     <form className="m-8 flex flex-col gap-5 uppercase" onSubmit={handleSubmit}>
       {alert.status && (
@@ -164,7 +169,7 @@ function FormAssignment() {
             onChange={(e) => setEmployeeForm(e.target.value)}
           >
             <option value="">-- Selecciona una opción --</option>
-            {employees.map((item) => (
+            {employees?.map((item) => (
               <option value={item.id} key={item.id}>
                 {`${item.name} ${item.firstName} ${item.lastName}`}
               </option>
@@ -184,7 +189,7 @@ function FormAssignment() {
             onChange={(e) => setEquip(e.target.value)}
           >
             <option value="">-- Selecciona una opción --</option>
-            {equipment.map((item) => (
+            {equipment?.map((item) => (
               <option value={item.id} key={item.id}>
                 {`${item.serialNumber} ${item.brand} ${item.model}`}
               </option>

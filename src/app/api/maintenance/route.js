@@ -24,12 +24,16 @@ export async function GET() {
       dataMaintenance,
     });
   } catch (error) {
-    return NextResponse.json(
+    return new NextResponse(
+      JSON.stringify({
+        success: false,
+        error:
+          "Hubo un problema al obtener los datos. Por favor, intente más tarde.",
+      }),
       {
-        message: error,
-      },
-      {
-        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
     );
   }
@@ -63,13 +67,16 @@ export async function POST(request) {
     });
   } catch (error) {
     console.log(error);
-    return NextResponse.json(
-      {
+    return new NextResponse(
+      JSON.stringify({
         success: false,
-        message: error.message || "Internal Sever Error",
-      },
+        error:
+          "Hubo un problema al obtener los datos. Por favor, intente más tarde.",
+      }),
       {
-        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
     );
   }
