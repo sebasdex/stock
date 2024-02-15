@@ -1,12 +1,81 @@
 "use client";
+import axios from "axios";
 import { useRouter, useParams } from "next/navigation";
-import { Suspense } from "react";
-function Table({ employee }) {
+import { useState, useEffect } from "react";
+import Alert from "../Alert";
+function Table() {
   const router = useRouter();
   const params = useParams();
+  const [employees, setEmployees] = useState([]);
+  const [alert, setAlert] = useState({
+    msg: "",
+    status: false,
+    type: "",
+  });
+
+  const loadData = async () => {
+    try {
+      const response = await axios("/api/employees");
+      if (response.data) {
+        setEmployees(response.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      if (confirm("Estas seguro de eliminar datos?")) {
+        const res = await axios.delete(`/api/employees/${id}`);
+        if (res.status === 204) {
+          setAlert({
+            msg: "Empleado eliminado exitosamente.",
+            status: true,
+            type: "success",
+          });
+          setTimeout(() => {
+            setAlert({
+              msg: "",
+              status: false,
+              type: "",
+            });
+          }, 5000);
+          await loadData();
+        }
+      }
+    } catch (error) {
+      if (error.response.status === 500) {
+        setAlert({
+          msg: "No se puede eliminar el usuario porque tiene asignado un equipo.",
+          status: true,
+          type: "error",
+        });
+        setTimeout(() => {
+          setAlert({
+            msg: "",
+            status: false,
+            type: "",
+          });
+        }, 5000);
+      }
+    }
+  };
 
   return (
     <section className="w-[70rem] h-auto m-auto mt-12 p-4 bg-white rounded-md">
+      {alert.status && (
+        <Alert
+          message={alert.msg}
+          type={
+            alert.type === "error" ? "bg-red-500 mb-4" : "bg-green-500 mb-4"
+          }
+        />
+      )}
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg ">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50">
@@ -26,8 +95,8 @@ function Table({ employee }) {
             </tr>
           </thead>
           <tbody>
-            {employee ? (
-              employee.map((item) => (
+            {employees ? (
+              employees.map((item) => (
                 <tr
                   className="odd:bg-whiteeven:bg-gray-50 border-b capitalize"
                   key={item.id}
@@ -59,9 +128,7 @@ function Table({ employee }) {
                       ""
                     ) : (
                       <button
-                        onClick={() =>
-                          router.push(`/employees/edit/${item.id}`)
-                        }
+                        onClick={() => handleDelete(item.id)}
                         className="hover:underline"
                       >
                         <span className="material-symbols-outlined">
