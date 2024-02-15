@@ -1,9 +1,47 @@
 "use client";
+import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-function TableM({ maintenance }) {
+function TableM() {
   const params = useParams();
   const router = useRouter();
+  const [maintenance, setMaintenance] = useState([]);
+  const [error, setError] = useState("");
+
+  // Función para recargar los datos
+  const reloadData = async () => {
+    setError(""); // Resetea el mensaje de error antes de intentar cargar los datos
+    try {
+      const { data } = await axios("/api/maintenance");
+      setMaintenance(data.dataMaintenance || []);
+    } catch (error) {
+      console.error("Error al cargar los datos:", error);
+      setError(
+        "Error al cargar los datos. Por favor, intenta de nuevo más tarde."
+      );
+    }
+  };
+
+  // Efecto para cargar los datos al montar el componente
+  useEffect(() => {
+    reloadData();
+  }, []); // Depende de un array vacío para ejecutarse solo en el montaje
+
+  // Función para manejar la eliminación de un registro de mantenimiento
+  const handleDelete = async (id) => {
+    if (confirm("¿Estás seguro de eliminar estos datos?")) {
+      try {
+        await axios.delete(`/api/maintenance/${id}`);
+        reloadData(); // Recarga los datos después de una eliminación exitosa
+      } catch (error) {
+        console.error(error);
+        setError(
+          "Error al eliminar el dato. Por favor, intenta de nuevo más tarde."
+        );
+      }
+    }
+  };
   return (
     <section className="w-[70rem] h-auto m-auto mt-12 p-4 bg-white rounded-md">
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg ">
@@ -65,9 +103,7 @@ function TableM({ maintenance }) {
                       ""
                     ) : (
                       <button
-                        onClick={() =>
-                          router.push(`/equipment/edit/${item.id}`)
-                        }
+                        onClick={() => handleDelete(item.id)}
                         className="hover:underline"
                       >
                         <span className="material-symbols-outlined">

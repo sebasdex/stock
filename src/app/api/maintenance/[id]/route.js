@@ -77,3 +77,39 @@ export async function PUT(request, { params }) {
     );
   }
 }
+
+export async function DELETE(request, { params }) {
+  try {
+    const result = await conn.query("DELETE FROM maintenance WHERE id = ?", [
+      params.id,
+    ]);
+    if (result.affectedRows === 0) {
+      return NextResponse.json(
+        {
+          message: "Producto no encontrado",
+        },
+        {
+          status: 404,
+        }
+      );
+    }
+    return NextResponse.json(
+      null,
+      {
+        success: true,
+      },
+      {
+        status: 204,
+      }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      {
+        message: error.message,
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}

@@ -1,11 +1,51 @@
 "use client";
+import axios from "axios";
+import Alert from "../Alert";
 import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 
 function TableEq({ equip }) {
   const params = useParams();
   const router = useRouter();
+  const [alert, setAlert] = useState({
+    msg: "",
+    status: false,
+    type: "",
+  });
+
+  const handleDelete = async (id) => {
+    try {
+      if (confirm("Estas seguro de eliminar datos?")) {
+        const res = await axios.delete(`/api/equipments/${id}`);
+        if (res.status === 204) {
+          router.push("/equipment");
+        }
+      }
+    } catch (error) {
+      setAlert({
+        msg: "Este equipo se encuentra en mantenimiento o asignado y no se puede eliminar.",
+        status: true,
+        type: "error",
+      });
+      setTimeout(() => {
+        setAlert({
+          msg: "",
+          status: false,
+          type: "",
+        });
+      }, 5000);
+    }
+  };
   return (
     <section className="w-[70rem] h-auto m-auto mt-12 p-4 bg-white rounded-md">
+      {alert.status && (
+        <Alert
+          message={alert.msg}
+          type={
+            alert.type === "error" ? "bg-red-500 mb-4" : "bg-green-500 mb-4"
+          }
+        />
+      )}
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg ">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50">
@@ -62,9 +102,7 @@ function TableEq({ equip }) {
                       ""
                     ) : (
                       <button
-                        onClick={() =>
-                          router.push(`/equipment/edit/${item.id}`)
-                        }
+                        onClick={() => handleDelete(item.id)}
                         className="hover:underline"
                       >
                         <span className="material-symbols-outlined">
