@@ -93,15 +93,9 @@ export async function DELETE(request, { params }) {
         }
       );
     }
-    return NextResponse.json(
-      null,
-      {
-        success: true,
-      },
-      {
-        status: 204,
-      }
-    );
+    return new NextResponse(null, {
+      status: 204,
+    });
   } catch (error) {
     return NextResponse.json(
       {

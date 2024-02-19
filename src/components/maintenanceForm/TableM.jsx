@@ -2,48 +2,61 @@
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useEmployees } from "@/context/myContext";
+import Alert from "../Alert";
 
 function TableM() {
   const params = useParams();
   const router = useRouter();
-  const [maintenance, setMaintenance] = useState([]);
-  const [error, setError] = useState("");
+  const { loadMaintenance, maintenance } = useEmployees();
+  const [alert, setAlert] = useState({
+    status: false,
+    msg: "",
+    type: "",
+  });
 
-  // Función para recargar los datos
-  const reloadData = async () => {
-    setError(""); // Resetea el mensaje de error antes de intentar cargar los datos
-    try {
-      const { data } = await axios("/api/maintenance");
-      setMaintenance(data.dataMaintenance || []);
-    } catch (error) {
-      console.error("Error al cargar los datos:", error);
-      setError(
-        "Error al cargar los datos. Por favor, intenta de nuevo más tarde."
-      );
-    }
-  };
-
-  // Efecto para cargar los datos al montar el componente
   useEffect(() => {
-    reloadData();
-  }, []); // Depende de un array vacío para ejecutarse solo en el montaje
+    const loadData = async () => {
+      await loadMaintenance();
+    };
+    loadData();
+  }, []);
 
   // Función para manejar la eliminación de un registro de mantenimiento
   const handleDelete = async (id) => {
     if (confirm("¿Estás seguro de eliminar estos datos?")) {
       try {
-        await axios.delete(`/api/maintenance/${id}`);
-        reloadData(); // Recarga los datos después de una eliminación exitosa
+        const res = await axios.delete(`/api/maintenance/${id}`);
+        if (res.status === 204) {
+          setAlert({
+            status: true,
+            msg: "Datos eliminados correctamente",
+            type: "success",
+          });
+          setTimeout(() => {
+            setAlert({
+              status: false,
+              msg: "",
+              type: "",
+            });
+          }, 5000);
+          await loadMaintenance();
+        }
       } catch (error) {
         console.error(error);
-        setError(
-          "Error al eliminar el dato. Por favor, intenta de nuevo más tarde."
-        );
       }
     }
   };
   return (
     <section className="w-[70rem] h-auto m-auto mt-12 p-4 bg-white rounded-md">
+      {alert.status && (
+        <Alert
+          message={alert.msg}
+          type={
+            alert.type === "error" ? "bg-red-500 mb-4" : "bg-green-500 mb-4"
+          }
+        />
+      )}
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg ">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50">
@@ -66,7 +79,7 @@ function TableM() {
             </tr>
           </thead>
           <tbody>
-            {Array.isArray(maintenance) && maintenance.length > 0 ? (
+            {maintenance.length > 0 ? (
               maintenance.map((item) => (
                 <tr className="border-b capitalize" key={item.id}>
                   <td className="px-6 py-4">{item.equip}</td>

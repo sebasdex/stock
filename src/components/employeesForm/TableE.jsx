@@ -1,31 +1,25 @@
 "use client";
 import axios from "axios";
 import { useRouter, useParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useEmployees } from "@/context/myContext";
 import Alert from "../Alert";
 function Table() {
   const router = useRouter();
   const params = useParams();
-  const [employees, setEmployees] = useState([]);
   const [alert, setAlert] = useState({
     msg: "",
     status: false,
     type: "",
   });
 
-  const loadData = async () => {
-    try {
-      const response = await axios("/api/employees");
-      if (response.data) {
-        setEmployees(response.data);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const { employees, loadEmployees } = useEmployees();
 
   useEffect(() => {
-    loadData();
+    const getEmployees = async () => {
+      await loadEmployees();
+    };
+    getEmployees();
   }, []);
 
   const handleDelete = async (id) => {
@@ -45,7 +39,7 @@ function Table() {
               type: "",
             });
           }, 5000);
-          await loadData();
+          await loadEmployees();
         }
       }
     } catch (error) {
@@ -95,7 +89,7 @@ function Table() {
             </tr>
           </thead>
           <tbody>
-            {employees ? (
+            {employees.length > 0 ? (
               employees.map((item) => (
                 <tr
                   className="odd:bg-whiteeven:bg-gray-50 border-b capitalize"

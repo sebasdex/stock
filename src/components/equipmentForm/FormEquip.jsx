@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { useEmployees } from "@/context/myContext";
 import Alert from "../Alert";
 import axios from "axios";
 function FormEquip() {
@@ -15,6 +16,7 @@ function FormEquip() {
   });
   const router = useRouter();
   const params = useParams();
+  const { loadEquipment } = useEmployees();
 
   useEffect(() => {
     const dataEquip = async () => {
@@ -86,6 +88,7 @@ function FormEquip() {
       status: true,
       type: "success",
     });
+    await loadEquipment();
     setTimeout(() => {
       setAlert({
         msg: "",

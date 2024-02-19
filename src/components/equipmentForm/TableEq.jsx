@@ -2,9 +2,10 @@
 import axios from "axios";
 import Alert from "../Alert";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useEmployees } from "@/context/myContext";
 
-function TableEq({ equip }) {
+function TableEq() {
   const params = useParams();
   const router = useRouter();
   const [alert, setAlert] = useState({
@@ -12,28 +13,50 @@ function TableEq({ equip }) {
     status: false,
     type: "",
   });
+  const { loadEquipment, equipment } = useEmployees();
+
+  useEffect(() => {
+    const getEquipments = async () => {
+      await loadEquipment();
+    };
+    getEquipments();
+  }, []);
 
   const handleDelete = async (id) => {
     try {
       if (confirm("Estas seguro de eliminar datos?")) {
         const res = await axios.delete(`/api/equipments/${id}`);
         if (res.status === 204) {
-          router.push("/equipment");
+          setAlert({
+            msg: "Equipo eliminado exitosamente.",
+            status: true,
+            type: "success",
+          });
+          setTimeout(() => {
+            setAlert({
+              msg: "",
+              status: false,
+              type: "",
+            });
+          }, 5000);
+          await loadEquipment();
         }
       }
     } catch (error) {
-      setAlert({
-        msg: "Este equipo se encuentra en mantenimiento o asignado y no se puede eliminar.",
-        status: true,
-        type: "error",
-      });
-      setTimeout(() => {
+      if (error.response.status === 500) {
         setAlert({
-          msg: "",
-          status: false,
-          type: "",
+          msg: "No se puede eliminar el equipo.",
+          status: true,
+          type: "error",
         });
-      }, 5000);
+        setTimeout(() => {
+          setAlert({
+            msg: "",
+            status: false,
+            type: "",
+          });
+        }, 5000);
+      }
     }
   };
   return (
@@ -68,8 +91,8 @@ function TableEq({ equip }) {
             </tr>
           </thead>
           <tbody>
-            {equip ? (
-              equip.map((item) => (
+            {equipment.length > 0 ? (
+              equipment.map((item) => (
                 <tr
                   className="odd:bg-whiteeven:bg-gray-50 border-b capitalize"
                   key={item.id}

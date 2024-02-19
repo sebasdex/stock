@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useEmployees } from "@/context/myContext";
 import Alert from "../Alert";
 import axios from "axios";
 
@@ -9,7 +10,6 @@ function FormMaintenance() {
   const [idEq, setEquip] = useState("");
   const [mDate, setDateM] = useState("");
   const [details, setDetails] = useState("");
-  const [dataEquip, setDataEquip] = useState([]);
   const [alert, setAlert] = useState({
     msg: "",
     status: false,
@@ -18,19 +18,13 @@ function FormMaintenance() {
 
   const router = useRouter();
   const params = useParams();
+  const { equipment, loadEquipment, loadMaintenance } = useEmployees();
 
   useEffect(() => {
-    async function dataAxios() {
-      try {
-        const dataMain = await axios("/api/maintenance");
-        if (dataMain.data) {
-          setDataEquip(dataMain.data.dataEquipment);
-        }
-      } catch (error) {
-        console.log(error);
-      }
+    async function dataEquipment() {
+      await loadEquipment();
     }
-    dataAxios();
+    dataEquipment();
   }, []);
 
   useEffect(() => {
@@ -93,7 +87,6 @@ function FormMaintenance() {
         );
         setTimeout(() => {
           router.push("/maintenance");
-          router.refresh();
         }, 2000);
       } else {
         await axios.post("/api/maintenance", {
@@ -103,7 +96,10 @@ function FormMaintenance() {
           details,
         });
         setAlertMessage("Los datos han sido registrados", true, "success");
-        router.refresh();
+        setTimeout(() => {
+          setAlertMessage("", false, "");
+        }, 3000);
+        await loadMaintenance();
       }
     } catch (error) {
       console.error("Error during request:", error);
@@ -164,7 +160,7 @@ function FormMaintenance() {
             onChange={(e) => setEquip(Number(e.target.value))}
           >
             <option value="">-- Selecciona una opción --</option>
-            {dataEquip?.map((item) => (
+            {equipment?.map((item) => (
               <option key={item.id} value={item.id}>
                 {`${item.brand}${" | "}${item.model}`}
               </option>

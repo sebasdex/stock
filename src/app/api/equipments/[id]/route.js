@@ -68,7 +68,7 @@ export async function DELETE(request, { params }) {
         }
       );
     }
-    return new NextResponse.json(null, {
+    return new NextResponse(null, {
       status: 204,
     });
   } catch (error) {

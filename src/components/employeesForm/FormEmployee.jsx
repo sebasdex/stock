@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Alert from "../Alert";
 import axios from "axios";
 import { useRouter, useParams } from "next/navigation";
+import { useEmployees } from "@/context/myContext";
 function FormEmployee() {
   const [name, setName] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -14,7 +15,7 @@ function FormEmployee() {
     status: false,
     type: "",
   });
-
+  const { loadEmployees } = useEmployees();
   const router = useRouter();
   const params = useParams();
 
@@ -63,6 +64,7 @@ function FormEmployee() {
       charge,
       department,
     });
+    await loadEmployees();
     setAlert({
       msg: "¡Éxito! Los datos han sido registrados",
       status: true,
@@ -104,7 +106,6 @@ function FormEmployee() {
         console.error("Error fetching data:", error);
       }
     };
-
     dataForm();
   }, []);
 
