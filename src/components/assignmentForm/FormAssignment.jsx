@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Alert from "../Alert";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
+import { useEmployees } from "@/context/myContext";
 
 function FormAssignment() {
   const [employees, setEmployees] = useState([]);
@@ -17,7 +18,7 @@ function FormAssignment() {
     status: false,
     type: "",
   });
-
+  const { loadAssignment } = useEmployees();
   const router = useRouter();
   const params = useParams();
 
@@ -126,7 +127,7 @@ function FormAssignment() {
           details,
         });
         setAlertMessage("Los datos han sido registrados", true, "success");
-        router.refresh();
+        await loadAssignment();
       }
     } catch (error) {
       console.error("Error during request:", error);

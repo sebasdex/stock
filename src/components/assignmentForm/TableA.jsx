@@ -1,25 +1,51 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Alert from "../Alert";
+import axios from "axios";
+import { useEmployees } from "@/context/myContext";
 
-function TableA({ assignment = [] }) {
+function TableA() {
   const params = useParams();
   const router = useRouter();
+  const { loadAssignment, assignment } = useEmployees();
   const [alert, setAlert] = useState({
     msg: "",
     status: false,
     type: "",
   });
+
+  useEffect(() => {
+    const dataAssignment = async () => {
+      await loadAssignment();
+    };
+    dataAssignment();
+  }, []);
+
   const handleDelete = async (id) => {
     try {
       if (confirm("Estas seguro de eliminar datos?")) {
-        const res = await axios.delete(`/api/assignment/${id}`);
-        if (res.status === 204) {
-          router.push("/equipment");
+        const res = await axios.put(`/api/assignment/${id}`, {
+          visible: 0,
+        });
+        if (res.status === 200) {
+          setAlert({
+            msg: "Asignación eliminada exitosamente.",
+            status: true,
+            type: "success",
+          });
+          setTimeout(() => {
+            setAlert({
+              msg: "",
+              status: false,
+              type: "",
+            });
+          }, 5000);
+          await loadAssignment();
         }
       }
     } catch (error) {
+      console.log(error.message);
       setAlert({
         msg: "Esta asignación se encuentra en mantenimiento y no se puede eliminar.",
         status: true,

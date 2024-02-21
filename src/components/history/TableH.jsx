@@ -1,5 +1,15 @@
 "use client";
-function TableH({ historyData = [] }) {
+import { useEmployees } from "@/context/myContext";
+import { useEffect } from "react";
+
+function TableH() {
+  const { loadHistory, history } = useEmployees();
+  useEffect(() => {
+    const getHistory = async () => {
+      await loadHistory();
+    };
+    getHistory();
+  }, []);
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg m-4">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500">
@@ -23,8 +33,8 @@ function TableH({ historyData = [] }) {
           </tr>
         </thead>
         <tbody>
-          {historyData.length > 0 ? (
-            historyData?.map((item) => (
+          {history.length > 0 ? (
+            history?.map((item) => (
               <tr className="bg-white border-b" key={item.id}>
                 <td className="px-6 py-4">{item.eq}</td>
                 <td className="px-6 py-4">{item.fullName}</td>

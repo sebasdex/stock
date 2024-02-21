@@ -6,7 +6,7 @@ export async function GET() {
     const employeesResult = await conn.query("SELECT * FROM employees");
     const equipmentResult = await conn.query("SELECT * FROM equipment");
     const assignmentData = await conn.query(
-      "SELECT CONCAT(employees.name,' ', employees.firstName, ' ', employees.lastName) AS name, CONCAT(equipment.brand,' ', equipment.model) AS equip, assignments.id, assignments.assignDate, assignments.details, assignments.status FROM assignments INNER JOIN employees ON assignments.idEmployee = employees.id INNER JOIN equipment ON assignments.idEq = equipment.id;"
+      "SELECT CONCAT(employees.name,' ', employees.firstName, ' ', employees.lastName) AS name, CONCAT(equipment.brand,' ', equipment.model) AS equip, assignments.id, assignments.assignDate, assignments.details, assignments.status FROM assignments INNER JOIN employees ON assignments.idEmployee = employees.id INNER JOIN equipment ON assignments.idEq = equipment.id WHERE assignments.visible = 1"
     );
     return NextResponse.json(
       {
@@ -45,6 +45,7 @@ export async function POST(request) {
       assignDate,
       details,
       status,
+      visible: 1,
     });
     return NextResponse.json(result);
   } catch (error) {

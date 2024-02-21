@@ -80,10 +80,6 @@ function Sidebar() {
           </Link>
         ))}
       </ul>
-      <button className="m-4 p-4 hover:bg-white hover:text-black rounded-md text-start flex items-center gap-5">
-        <span className="material-symbols-outlined">logout</span>
-        Salir
-      </button>
     </aside>
   );
 }
