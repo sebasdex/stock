@@ -33,7 +33,7 @@ function TableH() {
           </tr>
         </thead>
         <tbody>
-          {history.length > 0 ? (
+          {history?.length > 0 ? (
             history?.map((item) => (
               <tr className="bg-white border-b" key={item.id}>
                 <td className="px-6 py-4">{item.eq}</td>

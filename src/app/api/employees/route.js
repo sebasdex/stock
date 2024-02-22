@@ -3,7 +3,7 @@ import { conn } from "@/libs/db";
 
 export async function GET() {
   try {
-    const results = await conn.query("SELECT * FROM employees");
+    const results = await conn.query(process.env.QUERY_EMPLOYEESMOD);
     return NextResponse.json(results);
   } catch (error) {
     return (
@@ -21,7 +21,7 @@ export async function POST(request) {
   try {
     const { name, firstName, lastName, charge, department } =
       await request.json();
-    const result = await conn.query("INSERT INTO employees SET ?", {
+    const result = await conn.query(process.env.INSERT_EMPLOYEES, {
       name,
       firstName,
       lastName,

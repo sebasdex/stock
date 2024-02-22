@@ -3,11 +3,9 @@ import { conn } from "@/libs/db";
 
 export async function GET() {
   try {
-    const employeesResult = await conn.query("SELECT * FROM employees");
-    const equipmentResult = await conn.query("SELECT * FROM equipment");
-    const assignmentData = await conn.query(
-      "SELECT CONCAT(employees.name,' ', employees.firstName, ' ', employees.lastName) AS name, CONCAT(equipment.brand,' ', equipment.model) AS equip, assignments.id, assignments.assignDate, assignments.details, assignments.status FROM assignments INNER JOIN employees ON assignments.idEmployee = employees.id INNER JOIN equipment ON assignments.idEq = equipment.id WHERE assignments.visible = 1"
-    );
+    const employeesResult = await conn.query(process.env.QUERY_EMPLOYEES);
+    const equipmentResult = await conn.query(process.env.QUERY_EQUIPMENT);
+    const assignmentData = await conn.query(process.env.QUERY_ASSIGNMENT);
     return NextResponse.json(
       {
         employeesResult,
@@ -39,7 +37,7 @@ export async function POST(request) {
   try {
     const { idEmployee, idEq, assignDate, details, status } =
       await request.json();
-    const result = await conn.query("INSERT INTO assignments SET ?", {
+    const result = await conn.query(process.env.INSERT_ASSIGNMENT, {
       idEmployee,
       idEq,
       assignDate,

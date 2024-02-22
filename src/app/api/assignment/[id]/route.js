@@ -13,7 +13,7 @@ export async function GET(request, { params }) {
     );
   }
   try {
-    const [data] = await conn.query("SELECT * FROM assignments WHERE id = ?", [
+    const [data] = await conn.query(process.env.QUERY_ASSIGNMENT_ID, [
       params.id,
     ]);
     if (data.length === 0) {
@@ -44,7 +44,7 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
   try {
     const data = await request.json();
-    const result = await conn.query("UPDATE assignments SET ? WHERE id = ?", [
+    const result = await conn.query(process.env.QUERY_ASSIGNMENT_UPDATE, [
       data,
       params.id,
     ]);
@@ -60,7 +60,7 @@ export async function PUT(request, { params }) {
     }
 
     const [updatedAssignment] = await conn.query(
-      "SELECT * FROM assignments WHERE id = ?",
+      process.env.QUERY_ASSIGNMENT_UPDATE_RES,
       [params.id]
     );
     return new Response(JSON.stringify(updatedAssignment), {

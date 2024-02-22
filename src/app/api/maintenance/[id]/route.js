@@ -13,7 +13,7 @@ export async function GET(request, { params }) {
     );
   }
   try {
-    const [data] = await conn.query("SELECT * FROM maintenance WHERE id = ?", [
+    const [data] = await conn.query(process.env.QUERY_MAINTENANCE_ID, [
       params.id,
     ]);
     if (data.length === 0) {
@@ -44,7 +44,7 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
   try {
     const data = await request.json();
-    const result = await conn.query("UPDATE maintenance SET ? WHERE id = ?", [
+    const result = await conn.query(process.env.UPDATE_MAINTENANCE, [
       data,
       params.id,
     ]);
@@ -60,7 +60,7 @@ export async function PUT(request, { params }) {
     }
 
     const [updatedProduct] = await conn.query(
-      "SELECT * FROM equipment WHERE id = ?",
+      process.env.QUERY_UPDATE_MAINTENANCE,
       [params.id]
     );
     return new Response(JSON.stringify(updatedProduct), {
@@ -80,7 +80,7 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
-    const result = await conn.query("DELETE FROM maintenance WHERE id = ?", [
+    const result = await conn.query(process.env.DELETE_MAINTENANCE, [
       params.id,
     ]);
     if (result.affectedRows === 0) {

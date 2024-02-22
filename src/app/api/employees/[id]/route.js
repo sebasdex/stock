@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(request, { params }) {
   try {
-    const result = await conn.query("SELECT * FROM employees WHERE id = ?", [
+    const result = await conn.query(process.env.QUERY_EMPLOYEES_ID_MOD, [
       params.id,
     ]);
     if (result.length === 0) {
@@ -33,7 +33,7 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
   try {
     const data = await request.json();
-    const result = await conn.query("UPDATE employees SET ? WHERE id = ?", [
+    const result = await conn.query(process.env.UPDATE_EMPLOYEES_MOD, [
       data,
       params.id,
     ]);
@@ -48,10 +48,9 @@ export async function PUT(request, { params }) {
       );
     }
 
-    const updatedProduct = await conn.query(
-      "SELECT * FROM employees WHERE id = ?",
-      [params.id]
-    );
+    const updatedProduct = await conn.query(process.env.QUERY_UPDATE_EMP, [
+      params.id,
+    ]);
     return NextResponse.json(updatedProduct[0]);
   } catch (error) {
     return NextResponse.json(
@@ -67,9 +66,7 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
-    const result = await conn.query("DELETE FROM employees WHERE id = ?", [
-      params.id,
-    ]);
+    const result = await conn.query(process.env.DELETE_EMPLOYEES, [params.id]);
     if (result.affectedRows === 0) {
       return NextResponse.json(
         {

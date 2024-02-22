@@ -95,7 +95,7 @@ function TableA() {
             </tr>
           </thead>
           <tbody>
-            {assignment.length > 0 ? (
+            {assignment?.length > 0 ? (
               assignment?.map((item) => (
                 <tr
                   className="odd:bg-whiteeven:bg-gray-50 border-b capitalize"

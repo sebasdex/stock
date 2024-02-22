@@ -79,8 +79,8 @@ function TableM() {
             </tr>
           </thead>
           <tbody>
-            {maintenance.length > 0 ? (
-              maintenance.map((item) => (
+            {maintenance?.length > 0 ? (
+              maintenance?.map((item) => (
                 <tr className="border-b capitalize" key={item.id}>
                   <td className="px-6 py-4">{item.equip}</td>
                   <td className="px-6 py-4">{item.typeMain}</td>
