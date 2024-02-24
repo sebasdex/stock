@@ -3,7 +3,7 @@ import TableH from "@/components/history/TableH";
 import { useEffect } from "react";
 import { useEmployees } from "@/context/myContext";
 
-function dashboard() {
+function Dashboard() {
   const {
     employees,
     loadEmployees,
@@ -80,4 +80,4 @@ function dashboard() {
   );
 }
 
-export default dashboard;
+export default Dashboard;
