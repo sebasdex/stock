@@ -7,7 +7,7 @@ function ContextEmployees({ children }) {
   return (
     <EmployeesProvider>
       <Sidebar />
-      <Section children={children} />
+      <Section>{children}</Section>
     </EmployeesProvider>
   );
 }
