@@ -1,7 +1,6 @@
 import "./globals.css";
 import { roboto } from "@/fonts/font";
 import ContextEmployees from "@/components/ContextEmployees";
-import Head from "next/head";
 
 export const metadata = {
   title: "Sistema de inventarios",
@@ -10,13 +9,13 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <Head>
+    <html>
+      <head>
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
-      </Head>
+      </head>
       <body className={`${roboto.className} antialiased`}>
         <main className="flex">
           <ContextEmployees>{children}</ContextEmployees>

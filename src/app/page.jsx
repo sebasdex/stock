@@ -16,10 +16,10 @@ function Dashboard() {
   } = useEmployees();
   useEffect(() => {
     const getEmployees = async () => {
-      await loadEmployees();
-      await loadEquipment();
-      await loadMaintenance();
-      await loadAssignment();
+      // await loadEmployees();
+      // await loadEquipment();
+      // await loadMaintenance();
+      // await loadAssignment();
     };
     getEmployees();
   }, []);
@@ -44,7 +44,7 @@ function Dashboard() {
           </span>
           <p className="text-lg font-bold">
             Empleados
-            <span className="block font-semibold">{employees.length}</span>
+            <span className="block font-semibold">{employees?.length}</span>
           </p>
         </article>
         <article className="text-center bg-white rounded-md p-4">
@@ -53,7 +53,7 @@ function Dashboard() {
           </span>
           <p className="text-lg font-bold">
             Equipos
-            <span className="block font-semibold">{equipment.length}</span>
+            <span className="block font-semibold">{equipment?.length}</span>
           </p>
         </article>
         <article className="text-center bg-white rounded-md p-4">
@@ -62,7 +62,7 @@ function Dashboard() {
           </span>
           <p className="text-lg font-bold">
             Mantenimientos
-            <span className="block font-semibold">{maintenance.length}</span>
+            <span className="block font-semibold">{maintenance?.length}</span>
           </p>
         </article>
         <article className="text-center bg-white rounded-md p-4">
@@ -71,7 +71,7 @@ function Dashboard() {
           </span>
           <p className="text-lg font-bold">
             Asignaciones
-            <span className="block font-semibold">{assignment.length}</span>
+            <span className="block font-semibold">{assignment?.length}</span>
           </p>
         </article>
       </section>
