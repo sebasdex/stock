@@ -3,7 +3,7 @@ import { conn } from "@/libs/db";
 
 export async function GET() {
   try {
-    const data = await conn.query(process.env.QUERY_EQUIPMENT);
+    const data = await conn.query("SELECT * FROM equipment");
     return NextResponse.json(data);
   } catch (error) {
     console.log(error);
@@ -13,7 +13,7 @@ export async function GET() {
 export async function POST(request) {
   try {
     const { eqType, brand, model, serialNumber } = await request.json();
-    const result = conn.query(process.env.INSERT_EQUIPMENT, {
+    const result = conn.query("INSERT INTO equipment SET ?", {
       eqType,
       brand,
       model,

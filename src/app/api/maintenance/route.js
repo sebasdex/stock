@@ -3,8 +3,10 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const dataEquipment = await conn.query(process.env.QUERY_EQUIPMENT_M);
-    const dataMaintenance = await conn.query(process.env.QUERY_MAINTENANCE);
+    const dataEquipment = await conn.query("SELECT * FROM equipment");
+    const dataMaintenance = await conn.query(
+      "SELECT CONCAT(equipment.brand,' ', equipment.model) as equip,maintenance.id, maintenance.typeMain, maintenance.details, maintenance.mDate FROM maintenance, equipment WHERE maintenance.idEq = equipment.id;"
+    );
     if (dataEquipment.length === 0 || dataMaintenance === 0) {
       return NextResponse.json(
         {
@@ -53,7 +55,7 @@ export async function POST(request) {
       );
     }
 
-    const result = await conn.query(process.env.INSERT_MAINTENANCE, {
+    const result = await conn.query("INSERT INTO maintenance SET ?", {
       idEq,
       mDate,
       typeMain,

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(request, { params }) {
   try {
-    const result = await conn.query(process.env.QUERY_EQUIPMENT_ID, [
+    const result = await conn.query("SELECT * FROM equipment WHERE id = ?", [
       params.id,
     ]);
     return NextResponse.json(result);
@@ -22,7 +22,7 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
   try {
     const data = await request.json();
-    const result = await conn.query(process.env.UPDATE_EQUIPMENT, [
+    const result = await conn.query("UPDATE equipment SET ? WHERE id = ?", [
       data,
       params.id,
     ]);
@@ -36,9 +36,10 @@ export async function PUT(request, { params }) {
         }
       );
     }
-    const updatedProduct = await conn.query(process.env.QUERY_EQUIPMENT_ID2, [
-      params.id,
-    ]);
+    const updatedProduct = await conn.query(
+      "SELECT * FROM equipment WHERE id = ?",
+      [params.id]
+    );
     return NextResponse.json(updatedProduct[0]);
   } catch (error) {
     return NextResponse.json(
@@ -54,7 +55,9 @@ export async function PUT(request, { params }) {
 
 export async function DELETE(request, { params }) {
   try {
-    const result = await conn.query(process.env.DELETE_EQUIPMENT, [params.id]);
+    const result = await conn.query("DELETE FROM equipment WHERE id = ?", [
+      params.id,
+    ]);
     if (result.affectedRows === 0) {
       return NextResponse.json(
         {
