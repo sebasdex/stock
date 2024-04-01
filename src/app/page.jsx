@@ -1,28 +1,10 @@
 "use client";
 import TableH from "@/components/history/TableH";
-import { useEffect } from "react";
 import { useEmployees } from "@/context/myContext";
 
 function Dashboard() {
-  const {
-    employees,
-    loadEmployees,
-    equipment,
-    loadEquipment,
-    loadMaintenance,
-    loadAssignment,
-    maintenance,
-    assignment,
-  } = useEmployees();
-  useEffect(() => {
-    const getEmployees = async () => {
-      // await loadEmployees();
-      // await loadEquipment();
-      // await loadMaintenance();
-      // await loadAssignment();
-    };
-    getEmployees();
-  }, []);
+  const { employees, equipment, maintenance, assignment } = useEmployees();
+
   return (
     <>
       <section className="grid grid-cols-4 gap-5">
