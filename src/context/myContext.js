@@ -11,7 +11,7 @@ export const EmployeesProvider = ({ children }) => {
   const loadEmployees = async () => {
     try {
       const response = await axios("/api/employees");
-      const data = await response.data;
+      const data = await response.data[0];
       setEmployees(data);
     } catch (error) {
       console.error(error);

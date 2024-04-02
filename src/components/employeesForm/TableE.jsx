@@ -89,8 +89,8 @@ function Table() {
             </tr>
           </thead>
           <tbody>
-            {employees.length > 0 ? (
-              employees.map((item) => (
+            {employees?.length > 0 ? (
+              employees?.map((item) => (
                 <tr
                   className="odd:bg-whiteeven:bg-gray-50 border-b capitalize"
                   key={item.id}
