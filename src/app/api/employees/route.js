@@ -6,14 +6,7 @@ export async function GET() {
     const results = await conn.query("SELECT * FROM employees");
     return NextResponse.json(results);
   } catch (error) {
-    return (
-      {
-        message: error.message,
-      },
-      {
-        status: 500,
-      }
-    );
+    return NextResponse.json({ message: error.message }, { status: 500 });
   }
 }
 
